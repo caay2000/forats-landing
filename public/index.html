@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Forats — Reserva salas compartidas</title>
+  <meta name="description" content="Gestiona reservas de espacios compartidos sin registro. Únete con un código. Operativo en 3 minutos." />
+  <link rel="icon" type="image/png" sizes="512x512" href="/images/favicon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png" />
+  <link rel="apple-touch-icon" href="/images/favicon.png" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green: #1a5c2e;
+      --green-light: #f0f7f2;
+      --green-mid: #2d7a44;
+      --text: #1a1a1a;
+      --muted: #555;
+      --border: #e0e0e0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--text);
+      line-height: 1.6;
+      background: #fff;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    .nav-logo { height: 36px; width: 36px; border-radius: 8px; display: block; }
+    .lang-switcher { display: flex; gap: 0.25rem; }
+    .lang-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.25rem 0.6rem;
+      font-size: 0.82rem;
+      cursor: pointer;
+      color: var(--muted);
+      transition: all 0.15s;
+    }
+    .lang-btn.active { background: var(--green); border-color: var(--green); color: #fff; font-weight: 600; }
+
+    /* HERO */
+    .hero {
+      text-align: center;
+      padding: 4rem 1.5rem 3.5rem;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      color: var(--green);
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--muted);
+      margin-bottom: 2rem;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .cta-btn {
+      display: inline-block;
+      background: var(--green);
+      color: #fff;
+      padding: 0.85rem 2rem;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: background 0.15s;
+    }
+    .cta-btn:hover { background: var(--green-mid); }
+    .cta-row {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .cta-btn.soon {
+      background: transparent;
+      color: #999;
+      border-color: #ccc;
+      cursor: default;
+    }
+    .cta-btn.soon:hover { background: transparent; }
+    .cta-note { margin-top: 0.75rem; font-size: 0.82rem; color: #999; }
+
+    /* STEPS */
+    .steps { background: var(--green-light); padding: 3rem 1.5rem; }
+    .steps-inner { max-width: 960px; margin: 0 auto; }
+    .section-title {
+      text-align: center;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      color: var(--green);
+    }
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+    .step {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+    .step-num {
+      width: 2.2rem; height: 2.2rem;
+      background: var(--green); color: #fff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; margin: 0 auto 0.75rem; font-size: 0.95rem;
+    }
+    .step h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .step p { font-size: 0.88rem; color: var(--muted); }
+
+    /* FEATURE SECTIONS */
+    .feature-section { padding: 4rem 1.5rem; }
+    .feature-section.alt { background: var(--green-light); }
+    .feature-section-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .screen-label {
+      display: inline-block;
+      background: var(--green);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      margin-bottom: 0.6rem;
+    }
+    .feature-section h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 0.5rem;
+    }
+    .feature-section .lead {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      max-width: 400px;
+    }
+    .feature-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+    .feature-list li {
+      font-size: 0.92rem;
+      color: var(--muted);
+      padding-left: 1.4rem;
+      position: relative;
+    }
+    .feature-list li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    /* BACKOFFICE */
+    .backoffice-inner {
+      max-width: 640px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .backoffice-inner .lead { max-width: 480px; margin-left: auto; margin-right: auto; }
+    .backoffice-list {
+      display: inline-flex;
+      text-align: left;
+      margin: 0 auto 2rem;
+    }
+    .demo-box {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      max-width: 360px;
+      margin: 0 auto;
+    }
+    .demo-label { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.75rem; }
+    .demo-creds {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      font-size: 0.92rem;
+      color: var(--text);
+      background: var(--green-light);
+      border-radius: 8px;
+      padding: 0.65rem 0.9rem;
+      margin-bottom: 1rem;
+    }
+    .demo-box .cta-btn { padding: 0.7rem 1.5rem; font-size: 0.92rem; }
+
+    /* CAROUSEL */
+    .carousel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+    .carousel-viewport {
+      width: 260px;
+      position: relative;
+      overflow: hidden;
+    }
+    .carousel-track {
+      display: flex;
+      transition: transform 0.35s ease;
+    }
+    .carousel-slide { flex-shrink: 0; width: 260px; }
+    .carousel-phone {
+      background: #111;
+      border-radius: 40px;
+      padding: 12px;
+      box-shadow: 0 20px 56px rgba(0,0,0,0.18);
+    }
+    .carousel-phone::before {
+      content: "";
+      display: block;
+      width: 68px; height: 5px;
+      background: #2a2a2a;
+      border-radius: 4px;
+      margin: 0 auto 10px;
+    }
+    .carousel-phone img { width: 100%; border-radius: 28px; display: block; }
+
+    .carousel-caption {
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-align: center;
+      min-height: 1.2em;
+    }
+
+    .carousel-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .carousel-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      width: 2rem; height: 2rem;
+      cursor: pointer;
+      font-size: 1rem;
+      color: var(--green);
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+    .carousel-btn:hover { background: var(--green); color: #fff; border-color: var(--green); }
+    .carousel-dots {
+      display: flex;
+      gap: 0.4rem;
+    }
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--border);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .dot.active { background: var(--green); }
+
+    /* VERTICALS */
+    .verticals { padding: 3rem 1.5rem; }
+    .verticals-inner { max-width: 960px; margin: 0 auto; }
+    .verticals-grid {
+      display: flex; flex-wrap: wrap; gap: 0.6rem;
+      justify-content: center; margin-top: 1.5rem;
+    }
+    .vertical-tag {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 0.4rem 0.9rem;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 2rem 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: #999;
+    }
+    footer a { color: var(--green); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* LIGHTBOX */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      cursor: zoom-out;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox-phone {
+      background: #111;
+      border-radius: 48px;
+      padding: 14px;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+      max-height: 90vh;
+      width: auto;
+      animation: lb-in 0.22s ease;
+    }
+    .lightbox-phone::before {
+      content: "";
+      display: block;
+      width: 80px; height: 5px;
+      background: #2a2a2a;
+      border-radius: 4px;
+      margin: 0 auto 12px;
+    }
+    .lightbox-phone img {
+      display: block;
+      max-height: calc(90vh - 60px);
+      width: auto;
+      border-radius: 34px;
+    }
+    .lightbox-close {
+      position: fixed;
+      top: 1rem; right: 1.25rem;
+      background: rgba(255,255,255,0.12);
+      border: none;
+      color: #fff;
+      font-size: 1.5rem;
+      line-height: 1;
+      width: 2.2rem; height: 2.2rem;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .lightbox-close:hover { background: rgba(255,255,255,0.25); }
+    @keyframes lb-in {
+      from { opacity: 0; transform: scale(0.92); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    .carousel-phone img { cursor: zoom-in; }
+
+    /* RESPONSIVE */
+    @media (max-width: 640px) {
+      .feature-section-inner {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+      }
+      .carousel { order: -1; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+    <div class="lightbox-phone" onclick="event.stopPropagation()">
+      <img id="lightbox-img" src="" alt="" />
+    </div>
+  </div>
+
+  <nav>
+    <img src="/images/logo.png" alt="Forats" class="nav-logo" />
+    <div class="lang-switcher">
+      <button class="lang-btn" onclick="setLang('es')" id="btn-es">ES</button>
+      <button class="lang-btn" onclick="setLang('ca')" id="btn-ca">CA</button>
+      <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <h1 data-i18n="hero.title">Book shared spaces with no sign-up</h1>
+    <p data-i18n="hero.subtitle">Join with a code, book instantly. No accounts, no IT, completely free — ready in 3 minutes.</p>
+    <div class="cta-row">
+      <a href="https://play.google.com/store/apps/details?id=com.caay.forats" class="cta-btn" data-i18n="hero.cta">Get it on Google Play</a>
+      <span class="cta-btn soon" data-i18n="hero.ctaApple">App Store · Coming soon</span>
+    </div>
+  </section>
+
+  <section class="steps">
+    <div class="steps-inner">
+      <p class="section-title" data-i18n="steps.title">How it works</p>
+      <div class="steps-grid">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3 data-i18n="steps.s1.title">Admin creates the space</h3>
+          <p data-i18n="steps.s1.desc">Set up rooms and schedules in under 3 minutes.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3 data-i18n="steps.s2.title">Share the code</h3>
+          <p data-i18n="steps.s2.desc">Members join with no sign-up — just the code.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3 data-i18n="steps.s3.title">Book instantly</h3>
+          <p data-i18n="steps.s3.desc">Real-time availability. Instant confirmation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MEMBERS -->
+  <section class="feature-section">
+    <div class="feature-section-inner">
+      <div>
+        <span class="screen-label" data-i18n="members.badge">Members</span>
+        <h2 data-i18n="members.title">Book without an account</h2>
+        <p class="lead" data-i18n="members.lead">Join your organization's space with a code and start booking instantly.</p>
+        <ul class="feature-list">
+          <li data-i18n="members.f1">Join with a code — no account needed</li>
+          <li data-i18n="members.f2">Color-coded availability calendar — green, yellow and red at a glance</li>
+          <li data-i18n="members.f3">Book with name, email and phone — details pre-filled from last time</li>
+          <li data-i18n="members.f4">Your bookings shown as "Your booking" — never confused with others</li>
+          <li data-i18n="members.f5">Upcoming bookings visible right on the room list</li>
+          <li data-i18n="members.f6">Full booking history — upcoming and past in one place</li>
+          <li data-i18n="members.f7">Cancel any upcoming booking instantly</li>
+        </ul>
+      </div>
+      <div class="carousel" id="carousel-members">
+        <div class="carousel-viewport">
+          <div class="carousel-track">
+            <div class="carousel-slide"><div class="carousel-phone"><img src="/images/m1_join.png" alt="" /></div></div>
+            <div class="carousel-slide"><div class="carousel-phone"><img src="/images/m2_rooms.png" alt="" /></div></div>
+            <div class="carousel-slide"><div class="carousel-phone"><img src="/images/m3_detail.png" alt="" /></div></div>
+            <div class="carousel-slide"><div class="carousel-phone"><img src="/images/m4_booking.png" alt="" /></div></div>
+            <div class="carousel-slide"><div class="carousel-phone"><img src="/images/m5_history.png" alt="" /></div></div>
+          </div>
+        </div>
+        <p class="carousel-caption" id="caption-members"></p>
+        <div class="carousel-controls">
+          <button class="carousel-btn" onclick="carouselMove('members', -1)">‹</button>
+          <div class="carousel-dots" id="dots-members"></div>
+          <button class="carousel-btn" onclick="carouselMove('members', 1)">›</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ADMINS -->
+  <section class="feature-section alt">
+    <div class="feature-section-inner">
+      <div>
+        <span class="screen-label" data-i18n="admins.badge">Admin</span>
+        <h2 data-i18n="admins.title">Full control of your space</h2>
+        <p class="lead" data-i18n="admins.lead">Create the space, manage rooms, and view all bookings with full contact details.</p>
+        <ul class="feature-list">
+          <li data-i18n="admins.f1">Create your space in under 3 minutes</li>
+          <li data-i18n="admins.f2">Add and manage as many rooms as you need</li>
+          <li data-i18n="admins.f3">Weekly schedule per room — different hours each day, close specific days</li>
+          <li data-i18n="admins.f4">See all bookings with full contact details</li>
+          <li data-i18n="admins.f5">Block time slots — overlapping member bookings cancelled automatically</li>
+          <li data-i18n="admins.f6">Cancel any booking from the room detail</li>
+          <li data-i18n="admins.f7">Disable a room and batch-cancel all future bookings in one tap</li>
+          <li data-i18n="admins.f8">Share the space code via WhatsApp, email or any platform</li>
+          <li data-i18n="admins.f9">Access your space from any device with code + password</li>
+          <li data-i18n="admins.f10">Edit space name, address and hours any time</li>
+          <li data-i18n="admins.f11">Configure booking rules: min/max duration, notice, cancellation window and per-member quotas</li>
+          <li data-i18n="admins.f12">Add your space's logo to personalize the experience</li>
+        </ul>
+      </div>
+      <div class="carousel" id="carousel-admins">
+        <div class="carousel-viewport">
+          <div class="carousel-track">
+            <div class="carousel-slide"><div class="carousel-phone"><img src="/images/a1_create.png" alt="" /></div></div>
+            <div class="carousel-slide"><div class="carousel-phone"><img src="/images/a2_panel.png" alt="" /></div></div>
+            <div class="carousel-slide"><div class="carousel-phone"><img src="/images/a3_bookings.png" alt="" /></div></div>
+            <div class="carousel-slide"><div class="carousel-phone"><img src="/images/a4_weekly.png" alt="" /></div></div>
+            <div class="carousel-slide"><div class="carousel-phone"><img src="/images/a5_block.png" alt="" /></div></div>
+            <div class="carousel-slide"><div class="carousel-phone"><img src="/images/a6_settings.png" alt="" /></div></div>
+          </div>
+        </div>
+        <p class="carousel-caption" id="caption-admins"></p>
+        <div class="carousel-controls">
+          <button class="carousel-btn" onclick="carouselMove('admins', -1)">‹</button>
+          <div class="carousel-dots" id="dots-admins"></div>
+          <button class="carousel-btn" onclick="carouselMove('admins', 1)">›</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BACKOFFICE -->
+  <section class="feature-section backoffice-section">
+    <div class="backoffice-inner">
+      <span class="screen-label" data-i18n="backoffice.badge">Backoffice</span>
+      <h2 data-i18n="backoffice.title">Manage your space from a computer too</h2>
+      <p class="lead" data-i18n="backoffice.lead">The same admin panel, now in your browser — nothing to install.</p>
+      <ul class="feature-list backoffice-list">
+        <li data-i18n="backoffice.f1">Sign in with the same space code and password</li>
+        <li data-i18n="backoffice.f2">Manage rooms, schedules and bookings from any computer</li>
+        <li data-i18n="backoffice.f3">Handy for the front desk or working from home</li>
+      </ul>
+      <div class="demo-box">
+        <p class="demo-label" data-i18n="backoffice.demoLabel">Try it now with a live demo space</p>
+        <div class="demo-creds">
+          <span><strong data-i18n="backoffice.demoCodeLabel">Code</strong>: DEMO1</span>
+          <span><strong data-i18n="backoffice.demoPasswordLabel">Password</strong>: admin123</span>
+        </div>
+        <a href="https://bo.forats.app" target="_blank" rel="noopener" class="cta-btn" data-i18n="backoffice.ctaDemo">Open the backoffice demo</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- VERTICALS -->
+  <section class="verticals">
+    <div class="verticals-inner">
+      <p class="section-title" data-i18n="verticals.title">Perfect for</p>
+      <div class="verticals-grid">
+        <span class="vertical-tag" data-i18n="verticals.v1">Coworkings</span>
+        <span class="vertical-tag" data-i18n="verticals.v2">Cultural centers</span>
+        <span class="vertical-tag" data-i18n="verticals.v3">Sports clubs</span>
+        <span class="vertical-tag" data-i18n="verticals.v4">Shared practices</span>
+        <span class="vertical-tag" data-i18n="verticals.v5">Rehearsal rooms</span>
+        <span class="vertical-tag" data-i18n="verticals.v6">Civic venues</span>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 CAAYLabs &nbsp;·&nbsp; <a href="/privacy" data-i18n="footer.privacy">Privacy policy</a> &nbsp;·&nbsp; <a href="mailto:foratsapp@gmail.com" data-i18n="footer.contact">Contact</a></p>
+  </footer>
+
+  <script>
+    const translations = {
+      es: {
+        "hero.title": "Reserva salas compartidas sin registro",
+        "hero.subtitle": "Únete con un código, reserva al instante. Sin cuentas, sin IT, completamente gratis — operativo en 3 minutos.",
+        "hero.cta": "Descargar en Google Play",
+        "hero.ctaApple": "App Store · Próximamente",
+        "steps.title": "Cómo funciona",
+        "steps.s1.title": "El admin crea el espacio",
+        "steps.s1.desc": "Configura salas y horarios en menos de 3 minutos.",
+        "steps.s2.title": "Comparte el código",
+        "steps.s2.desc": "Los miembros se unen sin registrarse — solo con el código.",
+        "steps.s3.title": "Reserva al instante",
+        "steps.s3.desc": "Disponibilidad en tiempo real. Confirmación inmediata.",
+        "members.badge": "Miembros",
+        "members.title": "Reserva sin crear cuenta",
+        "members.lead": "Únete al espacio de tu organización con un código y empieza a reservar al instante.",
+        "members.f1": "Únete con un código — sin crear cuenta",
+        "members.f2": "Calendario de disponibilidad con colores — verde, amarillo y rojo de un vistazo",
+        "members.f3": "Reserva con nombre, email y teléfono — datos pre-rellenados del último uso",
+        "members.f4": "Tus reservas aparecen como «Tu reserva» — nunca confundidas con las de otros",
+        "members.f5": "Próximas reservas visibles en la lista de salas",
+        "members.f6": "Historial completo — próximas y pasadas en un solo lugar",
+        "members.f7": "Cancela cualquier reserva futura al instante",
+        "members.caps": ["Únete con un código", "Disponibilidad en colores", "Elige tu franja", "Confirma la reserva", "Próximas y historial"],
+        "admins.badge": "Administrador",
+        "admins.title": "Control total del espacio",
+        "admins.lead": "Crea el espacio, gestiona salas y consulta todas las reservas con datos de contacto completos.",
+        "admins.f1": "Crea el espacio en menos de 3 minutos",
+        "admins.f2": "Añade y gestiona tantas salas como necesites",
+        "admins.f3": "Horario semanal por sala — horas distintas cada día, cierra días concretos",
+        "admins.f4": "Ve todas las reservas con datos de contacto completos",
+        "admins.f5": "Bloquea franjas para uso interno — las reservas solapadas se cancelan automáticamente",
+        "admins.f6": "Cancela cualquier reserva desde el detalle de sala",
+        "admins.f7": "Desactiva una sala y cancela en lote todas las reservas futuras con un tap",
+        "admins.f8": "Comparte el código del espacio por WhatsApp, email o cualquier plataforma",
+        "admins.f9": "Accede desde cualquier dispositivo con código + contraseña",
+        "admins.f10": "Edita nombre, dirección y horarios del espacio en cualquier momento",
+        "admins.f11": "Configura reglas de reserva: duración mínima/máxima, antelación, cancelación y cuotas por miembro",
+        "admins.f12": "Añade el logo de tu espacio para personalizar la experiencia",
+        "admins.caps": ["Crea el espacio", "Gestiona las salas", "Controla las reservas"],
+        "backoffice.badge": "Backoffice",
+        "backoffice.title": "Gestiona tu espacio también desde el ordenador",
+        "backoffice.lead": "El mismo panel de administración, ahora también en el navegador — sin instalar nada.",
+        "backoffice.f1": "Accede con el mismo código y contraseña del espacio",
+        "backoffice.f2": "Gestiona salas, horarios y reservas desde cualquier ordenador",
+        "backoffice.f3": "Ideal para recepción o para trabajar desde casa",
+        "backoffice.demoLabel": "Pruébalo ahora mismo con un espacio demo en directo",
+        "backoffice.demoCodeLabel": "Código",
+        "backoffice.demoPasswordLabel": "Contraseña",
+        "backoffice.ctaDemo": "Abrir la demo del backoffice",
+        "verticals.title": "Perfecto para",
+        "verticals.v1": "Coworkings",
+        "verticals.v2": "Centros culturales",
+        "verticals.v3": "Clubs deportivos",
+        "verticals.v4": "Consultas compartidas",
+        "verticals.v5": "Salas de ensayo",
+        "verticals.v6": "Equipamientos municipales",
+        "footer.privacy": "Política de privacidad",
+        "footer.contact": "Contacto",
+      },
+      en: {
+        "hero.title": "Book shared spaces with no sign-up",
+        "hero.subtitle": "Join with a code, book instantly. No accounts, no IT, completely free — ready in 3 minutes.",
+        "hero.cta": "Get it on Google Play",
+        "hero.ctaApple": "App Store · Coming soon",
+        "steps.title": "How it works",
+        "steps.s1.title": "Admin creates the space",
+        "steps.s1.desc": "Set up rooms and schedules in under 3 minutes.",
+        "steps.s2.title": "Share the code",
+        "steps.s2.desc": "Members join with no sign-up — just the code.",
+        "steps.s3.title": "Book instantly",
+        "steps.s3.desc": "Real-time availability. Instant confirmation.",
+        "members.badge": "Members",
+        "members.title": "Book without an account",
+        "members.lead": "Join your organization's space with a code and start booking instantly.",
+        "members.f1": "Join with a code — no account needed",
+        "members.f2": "Color-coded availability calendar — green, yellow and red at a glance",
+        "members.f3": "Book with name, email and phone — details pre-filled from last time",
+        "members.f4": "Your bookings shown as \"Your booking\" — never confused with others",
+        "members.f5": "Upcoming bookings visible right on the room list",
+        "members.f6": "Full booking history — upcoming and past in one place",
+        "members.f7": "Cancel any upcoming booking instantly",
+        "members.caps": ["Join with a code", "Color-coded availability", "Pick your slot", "Confirm booking", "Upcoming & history"],
+        "admins.badge": "Admin",
+        "admins.title": "Full control of your space",
+        "admins.lead": "Create the space, manage rooms, and view all bookings with full contact details.",
+        "admins.f1": "Create your space in under 3 minutes",
+        "admins.f2": "Add and manage as many rooms as you need",
+        "admins.f3": "Weekly schedule per room — different hours each day, close specific days",
+        "admins.f4": "See all bookings with full contact details",
+        "admins.f5": "Block time slots — overlapping member bookings cancelled automatically",
+        "admins.f6": "Cancel any booking from the room detail",
+        "admins.f7": "Disable a room and batch-cancel all future bookings in one tap",
+        "admins.f8": "Share the space code via WhatsApp, email or any platform",
+        "admins.f9": "Access your space from any device with code + password",
+        "admins.f10": "Edit space name, address and hours any time",
+        "admins.f11": "Configure booking rules: min/max duration, notice, cancellation window and per-member quotas",
+        "admins.f12": "Add your space's logo to personalize the experience",
+        "admins.caps": ["Create the space", "Manage rooms", "Control bookings"],
+        "backoffice.badge": "Backoffice",
+        "backoffice.title": "Manage your space from a computer too",
+        "backoffice.lead": "The same admin panel, now in your browser — nothing to install.",
+        "backoffice.f1": "Sign in with the same space code and password",
+        "backoffice.f2": "Manage rooms, schedules and bookings from any computer",
+        "backoffice.f3": "Handy for the front desk or working from home",
+        "backoffice.demoLabel": "Try it right now with a live demo space",
+        "backoffice.demoCodeLabel": "Code",
+        "backoffice.demoPasswordLabel": "Password",
+        "backoffice.ctaDemo": "Open the backoffice demo",
+        "verticals.title": "Perfect for",
+        "verticals.v1": "Coworkings",
+        "verticals.v2": "Cultural centers",
+        "verticals.v3": "Sports clubs",
+        "verticals.v4": "Shared practices",
+        "verticals.v5": "Rehearsal rooms",
+        "verticals.v6": "Civic venues",
+        "footer.privacy": "Privacy policy",
+        "footer.contact": "Contact",
+      },
+      ca: {
+        "hero.title": "Reserva sales compartides sense registre",
+        "hero.subtitle": "Uneix-te amb un codi, reserva a l'instant. Sense comptes, sense IT, completament gratis — operatiu en 3 minuts.",
+        "hero.cta": "Descarrega a Google Play",
+        "hero.ctaApple": "App Store · Properament",
+        "steps.title": "Com funciona",
+        "steps.s1.title": "L'admin crea l'espai",
+        "steps.s1.desc": "Configura sales i horaris en menys de 3 minuts.",
+        "steps.s2.title": "Comparteix el codi",
+        "steps.s2.desc": "Els membres s'uneixen sense registrar-se — només amb el codi.",
+        "steps.s3.title": "Reserva a l'instant",
+        "steps.s3.desc": "Disponibilitat en temps real. Confirmació immediata.",
+        "members.badge": "Membres",
+        "members.title": "Reserva sense crear compte",
+        "members.lead": "Uneix-te a l'espai de la teva organització amb un codi i comença a reservar a l'instant.",
+        "members.f1": "Uneix-te amb un codi — sense crear compte",
+        "members.f2": "Calendari de disponibilitat amb colors — verd, groc i vermell d'un cop d'ull",
+        "members.f3": "Reserva amb nom, email i telèfon — dades pre-emplenades de l'últim ús",
+        "members.f4": "Les teves reserves apareixen com «La teva reserva» — mai confoses amb les dels altres",
+        "members.f5": "Properes reserves visibles a la llista de sales",
+        "members.f6": "Historial complet — properes i passades en un sol lloc",
+        "members.f7": "Cancel·la qualsevol reserva futura a l'instant",
+        "members.caps": ["Uneix-te amb un codi", "Disponibilitat en colors", "Tria la teva franja", "Confirma la reserva", "Properes i historial"],
+        "admins.badge": "Administrador",
+        "admins.title": "Control total de l'espai",
+        "admins.lead": "Crea l'espai, gestiona sales i consulta totes les reserves amb dades de contacte completes.",
+        "admins.f1": "Crea l'espai en menys de 3 minuts",
+        "admins.f2": "Afegeix i gestiona tantes sales com necessitis",
+        "admins.f3": "Horari setmanal per sala — hores diferents cada dia, tanca dies concrets",
+        "admins.f4": "Veu totes les reserves amb dades de contacte completes",
+        "admins.f5": "Bloqueja franges per a ús intern — les reserves solapades es cancel·len automàticament",
+        "admins.f6": "Cancel·la qualsevol reserva des del detall de sala",
+        "admins.f7": "Desactiva una sala i cancel·la en lot totes les reserves futures amb un tap",
+        "admins.f8": "Comparteix el codi de l'espai per WhatsApp, email o qualsevol plataforma",
+        "admins.f9": "Accedeix des de qualsevol dispositiu amb codi + contrasenya",
+        "admins.f10": "Edita nom, adreça i horaris de l'espai en qualsevol moment",
+        "admins.f11": "Configura regles de reserva: durada mínima/màxima, antelació, cancel·lació i quotes per membre",
+        "admins.f12": "Afegeix el logo del teu espai per personalitzar l'experiència",
+        "admins.caps": ["Crea l'espai", "Gestiona les sales", "Controla les reserves"],
+        "backoffice.badge": "Backoffice",
+        "backoffice.title": "Gestiona el teu espai també des de l'ordinador",
+        "backoffice.lead": "El mateix panell d'administració, ara també al navegador — sense instal·lar res.",
+        "backoffice.f1": "Accedeix amb el mateix codi i contrasenya de l'espai",
+        "backoffice.f2": "Gestiona sales, horaris i reserves des de qualsevol ordinador",
+        "backoffice.f3": "Ideal per a recepció o per treballar des de casa",
+        "backoffice.demoLabel": "Prova'l ara mateix amb un espai demo en directe",
+        "backoffice.demoCodeLabel": "Codi",
+        "backoffice.demoPasswordLabel": "Contrasenya",
+        "backoffice.ctaDemo": "Obre la demo del backoffice",
+        "verticals.title": "Perfecte per a",
+        "verticals.v1": "Coworkings",
+        "verticals.v2": "Centres culturals",
+        "verticals.v3": "Clubs esportius",
+        "verticals.v4": "Consultes compartides",
+        "verticals.v5": "Sales d'assaig",
+        "verticals.v6": "Equipaments municipals",
+        "footer.privacy": "Política de privacitat",
+        "footer.contact": "Contacte",
+      },
+    };
+
+    // Carousel state
+    const carouselState = { members: 0, admins: 0 };
+
+    function initCarousel(id, count) {
+      const dotsEl = document.getElementById('dots-' + id);
+      dotsEl.innerHTML = '';
+      for (let i = 0; i < count; i++) {
+        const d = document.createElement('span');
+        d.className = 'dot' + (i === 0 ? ' active' : '');
+        d.onclick = () => carouselGo(id, i);
+        dotsEl.appendChild(d);
+      }
+      updateCarousel(id);
+    }
+
+    const carouselTimers = {};
+
+    function startAutoAdvance(id, count) {
+      clearInterval(carouselTimers[id]);
+      carouselTimers[id] = setInterval(() => {
+        carouselState[id] = (carouselState[id] + 1) % count;
+        updateCarousel(id);
+      }, 5000);
+    }
+
+    function carouselMove(id, dir) {
+      const track = document.querySelector('#carousel-' + id + ' .carousel-track');
+      const count = track.children.length;
+      carouselState[id] = (carouselState[id] + dir + count) % count;
+      updateCarousel(id);
+      startAutoAdvance(id, count);
+    }
+
+    function carouselGo(id, idx) {
+      const track = document.querySelector('#carousel-' + id + ' .carousel-track');
+      const count = track.children.length;
+      carouselState[id] = idx;
+      updateCarousel(id);
+      startAutoAdvance(id, count);
+    }
+
+    function updateCarousel(id) {
+      const idx = carouselState[id];
+      const track = document.querySelector('#carousel-' + id + ' .carousel-track');
+      track.style.transform = `translateX(-${idx * 260}px)`;
+      document.querySelectorAll('#dots-' + id + ' .dot').forEach((d, i) => {
+        d.classList.toggle('active', i === idx);
+      });
+      const lang = document.documentElement.lang || 'es';
+      const caps = translations[lang]?.[id === 'members' ? 'members.caps' : 'admins.caps'];
+      if (caps) document.getElementById('caption-' + id).textContent = caps[idx] || '';
+    }
+
+    function setLang(lang) {
+      if (!translations[lang]) return;
+      document.documentElement.lang = lang;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[lang][key]) el.textContent = translations[lang][key];
+      });
+      document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById('btn-' + lang).classList.add('active');
+      localStorage.setItem('forats-lang', lang);
+      updateCarousel('members');
+      updateCarousel('admins');
+    }
+
+    function detectLang() {
+      const saved = localStorage.getItem('forats-lang');
+      if (saved && translations[saved]) return saved;
+      const browser = navigator.language.slice(0, 2).toLowerCase();
+      return translations[browser] ? browser : 'es';
+    }
+
+    function openLightbox(src) {
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+    document.querySelectorAll('.carousel-phone img').forEach(img => {
+      img.addEventListener('click', () => openLightbox(img.src));
+    });
+
+    initCarousel('members', 5);
+    initCarousel('admins', 6);
+    setLang(detectLang());
+    startAutoAdvance('members', 5);
+    setTimeout(() => startAutoAdvance('admins', 6), 2500);
+  </script>
+
+</body>
+</html>

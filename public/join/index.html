@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Únete a un espacio — Forats</title>
+  <meta name="robots" content="noindex" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/images/favicon.png" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green: #1a5c2e;
+      --green-light: #f0f7f2;
+      --text: #1a1a1a;
+      --muted: #555;
+      --border: #e0e0e0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--text);
+      line-height: 1.6;
+      background: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .card {
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .logo {
+      height: 56px;
+      width: 56px;
+      border-radius: 12px;
+      margin: 0 auto 1.5rem;
+      display: block;
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      margin-bottom: 0.5rem;
+    }
+
+    p.subtitle {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .code-box {
+      background: var(--green-light);
+      border: 1.5px solid var(--green);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .code-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .code-value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--green);
+      letter-spacing: 0.05em;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 0.85rem 1rem;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      margin-bottom: 0.75rem;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--green);
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: #fff;
+      color: var(--text);
+      border: 1.5px solid var(--border);
+    }
+
+    .hint {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 1rem;
+    }
+
+    #noCode { display: none; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <img class="logo" src="/images/favicon.png" alt="Forats" />
+    <h1>Únete a un espacio en Forats</h1>
+    <p class="subtitle">Reserva salas y espacios compartidos sin registro.</p>
+
+    <div class="code-box" id="codeBox">
+      <div class="code-label">Código del espacio</div>
+      <div class="code-value" id="codeValue">—</div>
+    </div>
+
+    <a class="btn btn-primary" id="openAppBtn" href="#">Abrir en la app</a>
+    <a class="btn btn-secondary" href="https://play.google.com/store/apps/details?id=com.caay.forats">Descargar en Google Play</a>
+
+    <p class="hint" id="manualHint">
+      Si ya tienes la app instalada y no se abre sola, ábrela e introduce el código a mano en "Unirse a un espacio".
+    </p>
+    <p class="hint" id="noCode">
+      Este enlace no incluye un código válido. Pide a quien te lo compartió que te lo reenvíe, o introdúcelo a mano en la app.
+    </p>
+  </div>
+
+  <script>
+    var code = window.location.pathname.split('/').filter(Boolean).pop();
+    // The route is /join/<code> — if nothing follows "join", the pop() above
+    // returns "join" itself, so treat that as "no code" too.
+    if (!code || code.toLowerCase() === 'join') {
+      document.getElementById('codeBox').style.display = 'none';
+      document.getElementById('manualHint').style.display = 'none';
+      document.getElementById('noCode').style.display = 'block';
+      document.getElementById('openAppBtn').style.display = 'none';
+    } else {
+      document.getElementById('codeValue').textContent = code;
+      document.getElementById('openAppBtn').href = 'forats://join/' + encodeURIComponent(code);
+    }
+  </script>
+</body>
+</html>
