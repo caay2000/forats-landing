@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.caay.forats",
+      "sha256_cert_fingerprints": [
+        "C2:D6:01:98:C3:C5:74:38:24:72:C8:30:C8:72:7E:6B:0E:E4:E7:B6:DD:BA:32:4C:CA:C1:C8:F5:F4:51:C4:1C"
+      ]
+    }
+  }
+]
