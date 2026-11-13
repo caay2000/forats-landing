@@ -1,11 +1,16 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "forats-landing",
+  "account_id": "863976d2b6661d3def0d96d064c9db58",
   "compatibility_date": "2026-05-01",
   "main": "landing-worker.js",
   "assets": {
     "directory": "public",
     "binding": "ASSETS",
     "not_found_handling": "404-page"
-  }
+  },
+  "routes": [
+    { "pattern": "forats.app", "custom_domain": true },
+    { "pattern": "www.forats.app", "custom_domain": true }
+  ]
 }
